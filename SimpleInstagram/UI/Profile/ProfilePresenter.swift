@@ -13,7 +13,6 @@ import RxCocoa
 protocol ProfileDelegate: class {
     func profileDidLoad(profile: ProfileDetailsResponse)
     func profileLoadFailed(error: Error)
-    func recentMediaDidLoad(recentMedia: [MediaData])
 }
 
 class ProfilePresenter {
@@ -24,19 +23,10 @@ class ProfilePresenter {
     
     let username: BehaviorRelay<String> = BehaviorRelay(value: "")
     let postCount: BehaviorRelay<Int> = BehaviorRelay(value: 0)
-    //let profileDetails: PublishSubject<ProfileDetailsResponse> = PublishSubject()
     
     required init(delegate: ProfileDelegate) {
         self.delegate = delegate
         fetchProfile()
-        loadRecentMediaList()
-            .subscribe(onNext: { [weak self] mediaResponse in
-                if let mediaList = mediaResponse.data {
-                    self?.delegate?.recentMediaDidLoad(recentMedia: mediaList)
-                }
-            }, onError: { error in
-                print("Error loading media: \(error)")
-            }).disposed(by: disposeBag)
     }
     
     func fetchProfile() {
@@ -67,10 +57,5 @@ class ProfilePresenter {
     
     func loadProfileDetails(username: String) -> Observable<ProfileDetailsResponse> {
         return requestManager.getProfileDetails(username: username)
-    }
-    
-    func loadRecentMediaList() -> Observable<MediaResponse> {
-        guard let token = token else { return Observable.empty() }
-        return requestManager.getMediaList(accessToken: token)
     }
 }

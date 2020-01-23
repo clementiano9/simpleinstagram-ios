@@ -72,13 +72,6 @@ extension ProfileViewController: ProfileDelegate {
         print("Error occurred")
     }
     
-    func recentMediaDidLoad(recentMedia: [MediaData]) {
-        // TODO: Load pictures
-        mediaList = recentMedia
-        collectionView.reloadData()
-    }
-    
-    
 }
 
 // MARK: - CollectionView Setup
